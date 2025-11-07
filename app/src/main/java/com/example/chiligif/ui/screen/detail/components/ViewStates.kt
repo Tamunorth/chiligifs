@@ -1,10 +1,11 @@
-package com.example.chiligif.ui.screen.search.components
+package com.example.chiligif.ui.screen.detail.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -18,9 +19,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.chiligif.R
 
-
 @Composable
-fun SearchLoadingState() {
+fun DetailLoadingContent() {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -29,9 +29,11 @@ fun SearchLoadingState() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            CircularProgressIndicator()
+            CircularProgressIndicator(
+                modifier = Modifier.size(48.dp)
+            )
             Text(
-                text = stringResource(id = R.string.loading_gifs),
+                text = stringResource(id = R.string.loading_gif_details),
                 style = MaterialTheme.typography.bodyLarge
             )
         }
@@ -39,7 +41,7 @@ fun SearchLoadingState() {
 }
 
 @Composable
-fun SearchErrorState(
+fun DetailErrorContent(
     message: String,
     onRetry: () -> Unit
 ) {
@@ -73,33 +75,3 @@ fun SearchErrorState(
         }
     }
 }
-
-@Composable
-fun SearchEmptyState() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.padding(32.dp)
-        ) {
-            Text(
-                text = stringResource(id = R.string.empty_emoji),
-                style = MaterialTheme.typography.displayLarge
-            )
-            Text(
-                text = stringResource(id = R.string.no_gifs_found),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = stringResource(id = R.string.try_different_search),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-    }
-}
-

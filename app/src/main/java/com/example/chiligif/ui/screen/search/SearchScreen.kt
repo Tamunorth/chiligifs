@@ -39,11 +39,11 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.chiligif.R
 import com.example.chiligif.ui.screen.search.components.CustomSearchBar
-import com.example.chiligif.ui.screen.search.components.EmptyState
-import com.example.chiligif.ui.screen.search.components.ErrorState
 import com.example.chiligif.ui.screen.search.components.GifGrid
-import com.example.chiligif.ui.screen.search.components.LoadingState
 import com.example.chiligif.ui.screen.search.components.SearchDialog
+import com.example.chiligif.ui.screen.search.components.SearchEmptyState
+import com.example.chiligif.ui.screen.search.components.SearchErrorState
+import com.example.chiligif.ui.screen.search.components.SearchLoadingState
 import com.example.chiligif.ui.viewmodel.SearchViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
@@ -139,10 +139,10 @@ fun SharedTransitionScope.SearchScreen(
             // Handle loading and error states
             when (val state = lazyGifItems.loadState.refresh) {
                 is LoadState.Loading -> {
-                    LoadingState()
+                    SearchLoadingState()
                 }
                 is LoadState.Error -> {
-                    ErrorState(
+                    SearchErrorState(
                         message = state.error.message ?: "An error occurred",
                         onRetry = { lazyGifItems.retry() }
                     )
@@ -150,7 +150,7 @@ fun SharedTransitionScope.SearchScreen(
                 else -> {
                     // Show the grid
                     if (lazyGifItems.itemCount == 0) {
-                        EmptyState()
+                        SearchEmptyState()
                     } else {
                         GifGrid(
                             lazyGifItems = lazyGifItems,

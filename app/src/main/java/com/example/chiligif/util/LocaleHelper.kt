@@ -37,7 +37,6 @@ object LocaleHelper {
         return if (currentLang == ENGLISH) LATVIAN else ENGLISH
     }
 
-
     fun recreateActivity(activity: Activity, languageCode: String) {
         setLocale(activity, languageCode)
         activity.recreate()

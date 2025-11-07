@@ -111,8 +111,13 @@ com.example.chiligif/
 │   ├── components/
 │   │   └── NetworkStatusBanner.kt
 │   ├── screen/
-│   │   ├── DetailScreen.kt
-│   │   └── SearchScreen.kt
+│   │   ├── 
+│   │   └── detail/
+│   │       └── DetailScreen.kt
+│   │       └── components/
+│   │   └── search/
+│   │       └── SearchScreen.kt
+│   │       └── components/
 │   ├── theme/
 │   │   ├── Color.kt
 │   │   ├── Theme.kt
