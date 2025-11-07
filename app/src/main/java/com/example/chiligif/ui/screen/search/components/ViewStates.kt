@@ -12,9 +12,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.chiligif.R
 
 
 @Composable
@@ -29,7 +31,7 @@ fun LoadingState() {
         ) {
             CircularProgressIndicator()
             Text(
-                text = "Loading GIFs...",
+                text = stringResource(id = R.string.loading_gifs),
                 style = MaterialTheme.typography.bodyLarge
             )
         }
@@ -51,11 +53,11 @@ fun ErrorState(
             modifier = Modifier.padding(32.dp)
         ) {
             Text(
-                text = "😕",
+                text = stringResource(id = R.string.error_emoji),
                 style = MaterialTheme.typography.displayLarge
             )
             Text(
-                text = "Oops! Something went wrong",
+                text = stringResource(id = R.string.error_title),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -66,7 +68,7 @@ fun ErrorState(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Button(onClick = onRetry) {
-                Text("Try Again")
+                Text(stringResource(id = R.string.try_again))
             }
         }
     }
@@ -84,16 +86,16 @@ fun EmptyState() {
             modifier = Modifier.padding(32.dp)
         ) {
             Text(
-                text = "🔍",
+                text = stringResource(id = R.string.empty_emoji),
                 style = MaterialTheme.typography.displayLarge
             )
             Text(
-                text = "No GIFs found",
+                text = stringResource(id = R.string.no_gifs_found),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = "Try a different search term",
+                text = stringResource(id = R.string.try_different_search),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

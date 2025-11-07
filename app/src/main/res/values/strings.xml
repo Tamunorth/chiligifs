@@ -1,5 +1,51 @@
 <resources>
     <string name="app_name">chiligif</string>
-    <string name="source_url">Source URL</string>
+    <string name="app_title">ChiliGIF</string>
 
+    <!-- Search Screen -->
+    <string name="search_placeholder">Search GIFs</string>
+    <string name="loading_gifs">Loading GIFs…</string>
+    <string name="no_gifs_found">No GIFs found</string>
+    <string name="try_different_search">Try a different search term</string>
+
+    <!-- Search Dialog -->
+    <string name="search_gifs_title">Search GIFs</string>
+    <string name="done">Done</string>
+    <string name="clear_and_close">Clear &amp; Close</string>
+
+    <!-- Detail Screen -->
+    <string name="gif_details">GIF Details</string>
+    <string name="details">Details</string>
+    <string name="creator">Creator</string>
+    <string name="rating">Rating</string>
+    <string name="dimensions">Dimensions</string>
+    <string name="file_size">File Size</string>
+    <string name="added">Added</string>
+    <string name="id">ID</string>
+    <string name="source_url">Source URL</string>
+    <string name="loading_gif_details">Loading GIF details…</string>
+    <string name="no_valid_images">This GIF has no valid images available</string>
+
+    <!-- Error States -->
+    <string name="error_emoji">😕</string>
+    <string name="error_title">Oops! Something went wrong</string>
+    <string name="try_again">Try Again</string>
+    <string name="retry">Retry</string>
+
+    <!-- Empty State -->
+    <string name="empty_emoji">🔍</string>
+
+    <!-- Network -->
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="no_internet">No internet</string>
+
+    <!-- Content Descriptions -->
+    <string name="back">Back</string>
+    <string name="search">Search</string>
+    <string name="clear">Clear</string>
+    <string name="toggle_theme">Toggle theme</string>
+    <string name="dark_mode">Dark mode</string>
+    <string name="light_mode">Light mode</string>
+    <string name="toggle_language">Toggle language</string>
+    <string name="language_code">EN</string>
 </resources>

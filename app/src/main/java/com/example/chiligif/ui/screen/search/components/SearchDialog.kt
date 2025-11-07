@@ -17,7 +17,9 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.chiligif.R
 
 @Composable
 fun SearchDialog(
@@ -29,7 +31,7 @@ fun SearchDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Search GIFs",
+                text = stringResource(id = R.string.search_gifs_title),
                 style = MaterialTheme.typography.titleLarge
             )
         },
@@ -39,11 +41,11 @@ fun SearchDialog(
                     value = query,
                     onValueChange = onQueryChange,
                     modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text("Search GIFs") },
+                    placeholder = { Text(stringResource(id = R.string.search_placeholder)) },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Search,
-                            contentDescription = "Search"
+                            contentDescription = stringResource(id = R.string.search)
                         )
                     },
                     trailingIcon = {
@@ -51,7 +53,7 @@ fun SearchDialog(
                             IconButton(onClick = { onQueryChange("") }) {
                                 Icon(
                                     imageVector = Icons.Default.Clear,
-                                    contentDescription = "Clear"
+                                    contentDescription = stringResource(id = R.string.clear)
                                 )
                             }
                         }
@@ -68,7 +70,7 @@ fun SearchDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("Done")
+                Text(stringResource(id = R.string.done))
             }
         },
         dismissButton = {
@@ -76,7 +78,7 @@ fun SearchDialog(
                 onQueryChange("")
                 onDismiss()
             }) {
-                Text("Clear & Close")
+                Text(stringResource(id = R.string.clear_and_close))
             }
         }
     )

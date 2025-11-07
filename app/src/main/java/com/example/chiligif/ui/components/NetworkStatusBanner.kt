@@ -22,8 +22,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.chiligif.R
 import com.example.chiligif.util.NetworkMonitor
 
 @Composable
@@ -50,13 +52,13 @@ fun NetworkStatusBanner(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Close,
-                    contentDescription = "No internet",
+                    contentDescription = stringResource(id = R.string.no_internet),
                     tint = Color.White,
                     modifier = Modifier.size(20.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "No internet connection",
+                    text = stringResource(id = R.string.no_internet_connection),
                     color = Color.White,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Medium

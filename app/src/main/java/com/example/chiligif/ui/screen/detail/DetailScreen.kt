@@ -74,7 +74,7 @@ fun SharedTransitionScope.DetailScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "GIF Details",
+                        text = stringResource(id = R.string.gif_details),
                         fontWeight = FontWeight.Bold
                     )
                 },
@@ -82,7 +82,7 @@ fun SharedTransitionScope.DetailScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(id = R.string.back)
                         )
                     }
                 },
@@ -149,7 +149,7 @@ private fun SharedTransitionScope.DetailContent(
     // If no valid URL is found, show error state
     if (gifUrl == null) {
         ErrorContent(
-            message = "This GIF has no valid images available",
+            message = stringResource(id = R.string.no_valid_images),
             onRetry = {}
         )
         return
@@ -230,7 +230,7 @@ private fun SharedTransitionScope.DetailContent(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         Text(
-                            text = "Details",
+                            text = stringResource(id = R.string.details),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSecondaryContainer
@@ -239,7 +239,7 @@ private fun SharedTransitionScope.DetailContent(
                         // Username
                         if (!gif.username.isNullOrBlank()) {
                             DetailRow(
-                                label = "Creator",
+                                label = stringResource(id = R.string.creator),
                                 value = gif.username
                             )
                         }
@@ -247,7 +247,7 @@ private fun SharedTransitionScope.DetailContent(
                         // Rating
                         gif.rating?.let {
                             DetailRow(
-                                label = "Rating",
+                                label = stringResource(id = R.string.rating),
                                 value = it.uppercase()
                             )
                         }
@@ -256,7 +256,7 @@ private fun SharedTransitionScope.DetailContent(
                         gif.images.original?.let { original ->
                             if (original.width != null && original.height != null) {
                                 DetailRow(
-                                    label = "Dimensions",
+                                    label = stringResource(id = R.string.dimensions),
                                     value = "${original.width} × ${original.height}"
                                 )
                             }
@@ -269,7 +269,7 @@ private fun SharedTransitionScope.DetailContent(
                             }
                             if (sizeInMB != null) {
                                 DetailRow(
-                                    label = "File Size",
+                                    label = stringResource(id = R.string.file_size),
                                     value = String.format(Locale.US, "%.2f MB", sizeInMB)
                                 )
                             }
@@ -288,14 +288,14 @@ private fun SharedTransitionScope.DetailContent(
                             }
 
                             DetailRow(
-                                label = "Added",
+                                label = stringResource(id = R.string.added),
                                 value = formattedDate
                             )
                         }
 
                         // GIF ID
                         DetailRow(
-                            label = "ID",
+                            label = stringResource(id = R.string.id),
                             value = gif.id
                         )
                     }
@@ -403,7 +403,7 @@ private fun SharedTransitionScope.DetailContent(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
-                        text = "Details",
+                        text = stringResource(id = R.string.details),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
@@ -412,7 +412,7 @@ private fun SharedTransitionScope.DetailContent(
                     // Username
                     if (!gif.username.isNullOrBlank()) {
                         DetailRow(
-                            label = "Creator",
+                            label = stringResource(id = R.string.creator),
                             value = gif.username
                         )
                     }
@@ -420,7 +420,7 @@ private fun SharedTransitionScope.DetailContent(
                     // Rating
                     gif.rating?.let {
                         DetailRow(
-                            label = "Rating",
+                            label = stringResource(id = R.string.rating),
                             value = it.uppercase()
                         )
                     }
@@ -429,7 +429,7 @@ private fun SharedTransitionScope.DetailContent(
                     gif.images.original?.let { original ->
                         if (original.width != null && original.height != null) {
                             DetailRow(
-                                label = "Dimensions",
+                                label = stringResource(id = R.string.dimensions),
                                 value = "${original.width} × ${original.height}"
                             )
                         }
@@ -442,7 +442,7 @@ private fun SharedTransitionScope.DetailContent(
                         }
                         if (sizeInMB != null) {
                             DetailRow(
-                                label = "File Size",
+                                label = stringResource(id = R.string.file_size),
                                 value = String.format(Locale.US, "%.2f MB", sizeInMB)
                             )
                         }
@@ -461,14 +461,14 @@ private fun SharedTransitionScope.DetailContent(
                         }
 
                         DetailRow(
-                            label = "Added",
+                            label = stringResource(id = R.string.added),
                             value = formattedDate
                         )
                     }
 
                     // GIF ID
                     DetailRow(
-                        label = "ID",
+                        label = stringResource(id = R.string.id),
                         value = gif.id
                     )
                 }
@@ -552,7 +552,7 @@ private fun LoadingContent() {
                 modifier = Modifier.size(48.dp)
             )
             Text(
-                text = "Loading GIF details...",
+                text = stringResource(id = R.string.loading_gif_details),
                 style = MaterialTheme.typography.bodyLarge
             )
         }
@@ -574,11 +574,11 @@ private fun ErrorContent(
             modifier = Modifier.padding(32.dp)
         ) {
             Text(
-                text = "😕",
+                text = stringResource(id = R.string.error_emoji),
                 style = MaterialTheme.typography.displayLarge
             )
             Text(
-                text = "Oops! Something went wrong",
+                text = stringResource(id = R.string.error_title),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -589,7 +589,7 @@ private fun ErrorContent(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Button(onClick = onRetry) {
-                Text("Try Again")
+                Text(stringResource(id = R.string.try_again))
             }
         }
     }

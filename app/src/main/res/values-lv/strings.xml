@@ -1,0 +1,52 @@
+<resources>
+    <string name="app_name">chiligif</string>
+    <string name="app_title">ChiliGIF</string>
+
+    <!-- Search Screen -->
+    <string name="search_placeholder">Meklēt GIF</string>
+    <string name="loading_gifs">Ielādē GIF…</string>
+    <string name="no_gifs_found">GIF nav atrasti</string>
+    <string name="try_different_search">Mēģiniet citu meklēšanas frāzi</string>
+
+    <!-- Search Dialog -->
+    <string name="search_gifs_title">Meklēt GIF</string>
+    <string name="done">Gatavs</string>
+    <string name="clear_and_close">Notīrīt un aizvērt</string>
+
+    <!-- Detail Screen -->
+    <string name="gif_details">GIF detaļas</string>
+    <string name="details">Detaļas</string>
+    <string name="creator">Autors</string>
+    <string name="rating">Vērtējums</string>
+    <string name="dimensions">Izmēri</string>
+    <string name="file_size">Faila izmērs</string>
+    <string name="added">Pievienots</string>
+    <string name="id">ID</string>
+    <string name="source_url">Avota URL</string>
+    <string name="loading_gif_details">Ielādē GIF detaļas…</string>
+    <string name="no_valid_images">Šim GIF nav pieejamu derīgu attēlu</string>
+
+    <!-- Error States -->
+    <string name="error_emoji">😕</string>
+    <string name="error_title">Ups! Kaut kas nogāja greizi</string>
+    <string name="try_again">Mēģināt vēlreiz</string>
+    <string name="retry">Atkārtot</string>
+
+    <!-- Empty State -->
+    <string name="empty_emoji">🔍</string>
+
+    <!-- Network -->
+    <string name="no_internet_connection">Nav interneta savienojuma</string>
+    <string name="no_internet">Nav interneta</string>
+
+    <!-- Content Descriptions -->
+    <string name="back">Atpakaļ</string>
+    <string name="search">Meklēt</string>
+    <string name="clear">Notīrīt</string>
+    <string name="toggle_theme">Pārslēgt tēmu</string>
+    <string name="dark_mode">Tumšais režīms</string>
+    <string name="light_mode">Gaišais režīms</string>
+    <string name="toggle_language">Pārslēgt valodu</string>
+    <string name="language_code">LV</string>
+</resources>
+
