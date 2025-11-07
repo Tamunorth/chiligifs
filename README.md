@@ -19,17 +19,20 @@ The app follows a **Single-Activity Architecture** with **MVVM (Model-View-ViewM
 ### Layers
 
 1. **View (UI) Layer**
-   - `MainActivity.kt`: Single entry point with Navigation Compose
+
+    - `MainActivity.kt`: Single entry point with Navigation Compose
    - `SearchScreen.kt`: Grid view of GIF search results
    - `DetailScreen.kt`: Detailed view of individual GIFs
    - `NetworkStatusBanner.kt`: Network connectivity indicator
 
 2. **ViewModel Layer**
-   - `SearchViewModel.kt`: Manages search state with debounced auto-search
+
+    - `SearchViewModel.kt`: Manages search state with debounced auto-search
    - `DetailViewModel.kt`: Manages detail screen state
 
 3. **Data Layer**
-   - `GiphyRepository.kt`: Single source of truth for data access
+
+    - `GiphyRepository.kt`: Single source of truth for data access
    - `GiphyPagingSource.kt`: Paging 3 integration for infinite scrolling
    - `GiphyApiService.kt`: Retrofit interface for Giphy API
 
@@ -79,6 +82,7 @@ GIPHY_API_KEY=your_api_key_here
 ```
 
 **Important Security Notes:**
+
 - ✅ A template file `local.properties.template` is provided for reference
 
 ### 4. Build and Run
@@ -140,6 +144,7 @@ Run tests with:
 ## 🎨 UI Features
 
 ### Search Screen
+
 - Clean search interface with Material 3 design
 - Real-time search with 500ms debounce
 - Adaptive grid layout (GridCells.Adaptive)
@@ -147,6 +152,7 @@ Run tests with:
 - Smooth animations and transitions
 
 ### Detail Screen
+
 - Full-size GIF display
 - Detailed information including:
   - Title
@@ -158,6 +164,7 @@ Run tests with:
   - Source URL
 
 ### Network Status
+
 - Real-time network connectivity monitoring
 - Banner notification when offline
 - Automatic updates when connection restored
@@ -226,4 +233,3 @@ For questions or feedback, please open an issue on GitHub.
 ---
 
 Built with ❤️ using Jetpack Compose
-

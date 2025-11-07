@@ -1,6 +1,9 @@
-package com.example.chiligif.ui.screen
+package com.example.chiligif.ui.screen.detail
 
+import android.os.Build
+import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,9 +38,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -46,6 +50,7 @@ import coil.compose.SubcomposeAsyncImage
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
+import com.example.chiligif.R
 import com.example.chiligif.data.model.GifDto
 import com.example.chiligif.ui.viewmodel.DetailUiState
 import com.example.chiligif.ui.viewmodel.DetailViewModel
@@ -110,6 +115,7 @@ fun DetailScreen(
 @Composable
 private fun DetailContent(gif: GifDto) {
     val context = LocalContext.current
+    val urlHandler = LocalUriHandler.current
     val scrollState = rememberScrollState()
 
     // Remember formatters so they aren't re-created constantly
@@ -153,7 +159,7 @@ private fun DetailContent(gif: GifDto) {
                 model = ImageRequest.Builder(context)
                     .data(gifUrl)
                     .decoderFactory(
-                        if (android.os.Build.VERSION.SDK_INT >= 28) {
+                        if (Build.VERSION.SDK_INT >= 28) {
                             ImageDecoderDecoder.Factory()
                         } else {
                             GifDecoder.Factory()
@@ -242,7 +248,7 @@ private fun DetailContent(gif: GifDto) {
                     if (sizeInMB != null) {
                         DetailRow(
                             label = "File Size",
-                            value = String.format("%.2f MB", sizeInMB)
+                            value = String.format(Locale.US, "%.2f MB", sizeInMB)
                         )
                     }
                 }
@@ -255,6 +261,7 @@ private fun DetailContent(gif: GifDto) {
                         date?.let { outputFormat.format(it) } ?: datetime
                     } catch (e: Exception) {
                         // Fallback if parsing throws an exception
+                        Log.e("DetailContent", "Date parsing error: ${e.localizedMessage}")
                         datetime
                     }
 
@@ -286,12 +293,17 @@ private fun DetailContent(gif: GifDto) {
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = "Source URL",
+                        text = stringResource(id = R.string.source_url),
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onTertiaryContainer
                     )
                     Text(
+                        modifier = Modifier.clickable(
+                            onClick = {
+                                urlHandler.openUri(gif.url)
+                            }
+                        ),
                         text = gif.url,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onTertiaryContainer
