@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -26,7 +27,8 @@ class MainActivity : ComponentActivity() {
     
     @Inject
     lateinit var networkMonitor: NetworkMonitor
-    
+
+    @androidx.compose.animation.ExperimentalSharedTransitionApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -38,39 +40,43 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@androidx.compose.animation.ExperimentalSharedTransitionApi
 @Composable
 fun ChiligifApp(networkMonitor: NetworkMonitor) {
     val navController = rememberNavController()
     
     Column(modifier = Modifier.fillMaxSize()) {
         NetworkStatusBanner(networkMonitor = networkMonitor)
-        
-        NavHost(
-            navController = navController,
-            startDestination = "search",
-            modifier = Modifier.weight(1f)
-        ) {
-            composable("search") {
-                SearchScreen(
-                    onGifClick = { gifId ->
-                        navController.navigate("detail/$gifId")
-                    }
-                )
-            }
-            
-            composable(
-                route = "detail/{gifId}",
-                arguments = listOf(
-                    navArgument("gifId") {
-                        type = NavType.StringType
-                    }
-                )
+
+        SharedTransitionLayout(modifier = Modifier.weight(1f)) {
+            NavHost(
+                navController = navController,
+                startDestination = "search"
             ) {
-                DetailScreen(
-                    onBackClick = {
-                        navController.popBackStack()
-                    }
-                )
+                composable("search") {
+                    SearchScreen(
+                        onGifClick = { gifId ->
+                            navController.navigate("detail/$gifId")
+                        },
+                        animatedVisibilityScope = this
+                    )
+                }
+
+                composable(
+                    route = "detail/{gifId}",
+                    arguments = listOf(
+                        navArgument("gifId") {
+                            type = NavType.StringType
+                        }
+                    )
+                ) {
+                    DetailScreen(
+                        onBackClick = {
+                            navController.popBackStack()
+                        },
+                        animatedVisibilityScope = this
+                    )
+                }
             }
         }
     }

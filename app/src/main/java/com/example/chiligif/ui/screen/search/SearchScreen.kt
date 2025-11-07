@@ -1,6 +1,9 @@
 package com.example.chiligif.ui.screen.search
 
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,10 +30,11 @@ import com.example.chiligif.ui.screen.search.components.GifGrid
 import com.example.chiligif.ui.screen.search.components.LoadingState
 import com.example.chiligif.ui.viewmodel.SearchViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
-fun SearchScreen(
+fun SharedTransitionScope.SearchScreen(
     onGifClick: (String) -> Unit,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     viewModel: SearchViewModel = hiltViewModel()
 ) {
     val searchQuery by viewModel.searchQuery.collectAsState()
@@ -84,7 +88,8 @@ fun SearchScreen(
                     } else {
                         GifGrid(
                             lazyGifItems = lazyGifItems,
-                            onGifClick = onGifClick
+                            onGifClick = onGifClick,
+                            animatedVisibilityScope = animatedVisibilityScope
                         )
                     }
                 }

@@ -14,10 +14,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DetailViewModelTest {
@@ -74,9 +75,17 @@ class DetailViewModelTest {
         // Then
         viewModel.uiState.test {
             val state = awaitItem()
-            assertTrue(state is DetailUiState.Success)
-            assertEquals(mockGif, state.gif)
+
+
+            val successState = state as? DetailUiState.Success
+
+            // 2. Assert that the cast was successful
+            assertNotNull("The state was not DetailUiState.Success", successState)
+
+            assertEquals(mockGif, successState?.gif)
+
         }
+
     }
     
     @Test
@@ -92,8 +101,13 @@ class DetailViewModelTest {
         // Then
         viewModel.uiState.test {
             val state = awaitItem()
-            assertTrue(state is DetailUiState.Error)
-            assertEquals(errorMessage, state.message)
+
+            val errorState = state as? DetailUiState.Error
+
+            assertNotNull(errorState)
+
+
+            assertEquals(errorMessage, errorState?.message)
         }
     }
     

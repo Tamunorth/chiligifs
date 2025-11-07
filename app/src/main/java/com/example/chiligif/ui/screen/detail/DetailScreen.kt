@@ -1,7 +1,9 @@
 package com.example.chiligif.ui.screen.detail
 
-import android.os.Build
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -47,8 +49,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import com.example.chiligif.R
 import com.example.chiligif.data.model.GifDto
@@ -57,10 +57,11 @@ import com.example.chiligif.ui.viewmodel.DetailViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
-fun DetailScreen(
+fun SharedTransitionScope.DetailScreen(
     onBackClick: () -> Unit,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     viewModel: DetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -99,7 +100,10 @@ fun DetailScreen(
                     LoadingContent()
                 }
                 is DetailUiState.Success -> {
-                    DetailContent(gif = state.gif)
+                    DetailContent(
+                        gif = state.gif,
+                        animatedVisibilityScope = animatedVisibilityScope
+                    )
                 }
                 is DetailUiState.Error -> {
                     ErrorContent(
@@ -112,8 +116,12 @@ fun DetailScreen(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-private fun DetailContent(gif: GifDto) {
+private fun SharedTransitionScope.DetailContent(
+    gif: GifDto,
+    animatedVisibilityScope: AnimatedVisibilityScope
+) {
     val context = LocalContext.current
     val urlHandler = LocalUriHandler.current
     val scrollState = rememberScrollState()
@@ -158,20 +166,19 @@ private fun DetailContent(gif: GifDto) {
             SubcomposeAsyncImage(
                 model = ImageRequest.Builder(context)
                     .data(gifUrl)
-                    .decoderFactory(
-                        if (Build.VERSION.SDK_INT >= 28) {
-                            ImageDecoderDecoder.Factory()
-                        } else {
-                            GifDecoder.Factory()
-                        }
-                    )
+                    .memoryCacheKey(gif.id) // Use GIF ID as cache key
+                    .diskCacheKey(gif.id)
                     .crossfade(true)
                     .build(),
                 contentDescription = gif.title,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(1f),
+                    .aspectRatio(1f)
+                    .sharedElement(
+                        sharedContentState = rememberSharedContentState(key = "gif-${gif.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope
+                    ),
                 loading = {
                     Box(
                         modifier = Modifier

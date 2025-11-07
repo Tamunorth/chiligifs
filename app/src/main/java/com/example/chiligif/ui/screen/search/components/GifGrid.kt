@@ -1,6 +1,8 @@
 package com.example.chiligif.ui.screen.search.components
 
-import android.os.Build
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,8 +35,6 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.SubcomposeAsyncImage
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import com.example.chiligif.data.model.GifDto
 import com.example.chiligif.data.model.ImageVariantDto
@@ -42,10 +42,12 @@ import com.example.chiligif.data.model.ImagesDto
 import kotlinx.coroutines.flow.flowOf
 
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun GifGrid(
+fun SharedTransitionScope.GifGrid(
     lazyGifItems: LazyPagingItems<GifDto>,
-    onGifClick: (String) -> Unit
+    onGifClick: (String) -> Unit,
+    animatedVisibilityScope: AnimatedVisibilityScope
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 150.dp),
@@ -61,7 +63,8 @@ fun GifGrid(
             lazyGifItems[index]?.let { gif ->
                 GifGridItem(
                     gif = gif,
-                    onClick = { onGifClick(gif.id) }
+                    onClick = { onGifClick(gif.id) },
+                    animatedVisibilityScope = animatedVisibilityScope
                 )
             }
         }
@@ -100,6 +103,7 @@ fun GifGrid(
 }
 
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview
 @Composable
 private fun GifGridPreview() {
@@ -144,16 +148,23 @@ private fun GifGridPreview() {
 
     val lazyGifItems = gifFlow.collectAsLazyPagingItems()
 
-    GifGrid(
-        lazyGifItems = lazyGifItems,
-        onGifClick = {}
-    )
+    androidx.compose.animation.SharedTransitionLayout {
+        androidx.compose.animation.AnimatedVisibility(visible = true) {
+            GifGrid(
+                lazyGifItems = lazyGifItems,
+                onGifClick = {},
+                animatedVisibilityScope = this
+            )
+        }
+    }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-private fun GifGridItem(
+private fun SharedTransitionScope.GifGridItem(
     gif: GifDto,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    animatedVisibilityScope: AnimatedVisibilityScope
 ) {
     val context = LocalContext.current
 
@@ -179,18 +190,18 @@ private fun GifGridItem(
             SubcomposeAsyncImage(
                 model = ImageRequest.Builder(context)
                     .data(gifUrl)
-                    .decoderFactory(
-                        if (Build.VERSION.SDK_INT >= 28) {
-                            ImageDecoderDecoder.Factory()
-                        } else {
-                            GifDecoder.Factory()
-                        }
-                    )
+                    .memoryCacheKey(gif.id) // Use GIF ID as cache key
+                    .diskCacheKey(gif.id)
                     .crossfade(true)
                     .build(),
                 contentDescription = gif.title,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .sharedElement(
+                        sharedContentState = rememberSharedContentState(key = "gif-${gif.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope
+                    ),
                 loading = {
                     Box(
                         modifier = Modifier

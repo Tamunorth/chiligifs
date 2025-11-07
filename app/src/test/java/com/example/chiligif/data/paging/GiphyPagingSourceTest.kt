@@ -10,13 +10,15 @@ import com.example.chiligif.data.model.SearchResponseDto
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import okhttp3.ResponseBody.Companion.toResponseBody
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 
 class GiphyPagingSourceTest {
     
@@ -115,8 +117,8 @@ class GiphyPagingSourceTest {
 
         val page = result as PagingSource.LoadResult.Page
 
-        assertTrue(result.data.isEmpty())
-        assertEquals(null, result.nextKey)
+        assertTrue(page.data.isEmpty())
+        assertEquals(null, page.nextKey)
     }
     
     @Test
@@ -140,17 +142,21 @@ class GiphyPagingSourceTest {
                 placeholdersEnabled = false
             )
         )
-        
+
+        val resultValue = result as? PagingSource.LoadResult.Error
         // Then
-        assertTrue(result is PagingSource.LoadResult.Error)
-        assertEquals(exception, result.throwable)
+        assertNotNull(
+            "Expected LoadResult.Error but got $result",
+            resultValue
+        )
+        assertEquals(exception, resultValue?.throwable)
     }
     
     @Test
     fun `load returns Error when HttpException occurs`() = runTest {
         // Given
         val exception = HttpException(
-            Response.error<Any>(404, okhttp3.ResponseBody.create(null, "Not found"))
+            Response.error<Any>(404, "Not found".toResponseBody(null))
         )
         coEvery {
             apiService.search(
@@ -169,10 +175,15 @@ class GiphyPagingSourceTest {
                 placeholdersEnabled = false
             )
         )
-        
+
+        val resultValue = result as? PagingSource.LoadResult.Error
+
         // Then
-        assertTrue(result is PagingSource.LoadResult.Error)
-        assertTrue(result.throwable is HttpException)
+        assertNotNull(
+            "Expected LoadResult.Error but got $result",
+            resultValue
+        )
+        assertTrue(resultValue?.throwable is HttpException)
     }
     
     @Test
@@ -204,12 +215,14 @@ class GiphyPagingSourceTest {
                 placeholdersEnabled = false
             )
         )
-        
+
+        val resultValue = result as? PagingSource.LoadResult.Page
+
         // Then
-        assertTrue(result is PagingSource.LoadResult.Page)
-        assertEquals(mockGifs, result.data)
-        assertEquals(1, result.prevKey)
-        assertEquals(3, result.nextKey)
+        assertNotNull(resultValue)
+        assertEquals(mockGifs, resultValue?.data)
+        assertEquals(1, resultValue?.prevKey)
+        assertEquals(3, resultValue?.nextKey)
     }
     
     @Test
@@ -219,8 +232,8 @@ class GiphyPagingSourceTest {
         val anchorPosition = 25
         
         coEvery { state.anchorPosition } returns anchorPosition
-        coEvery { state.closestPageToPosition(anchorPosition) } returns 
-            androidx.paging.PagingSource.LoadResult.Page(
+        coEvery { state.closestPageToPosition(anchorPosition) } returns
+                PagingSource.LoadResult.Page(
                 data = mockGifs,
                 prevKey = 1,
                 nextKey = 3
