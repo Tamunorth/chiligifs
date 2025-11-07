@@ -44,18 +44,23 @@ class SearchViewModelTest {
     }
     
     @Test
-    fun `initial search query is trending`() = runTest {
+    fun `initial search query is empty and passes empty string to repository`() = runTest {
         // Given
         every { repository.getSearchStream(any()) } returns flowOf(PagingData.from(listOf(mockGif)))
         
         // When
         viewModel = SearchViewModel(repository)
         val gifsJob = viewModel.gifs.launchIn(backgroundScope)
+        advanceTimeBy(500) // Wait for debounce
+        testDispatcher.scheduler.advanceUntilIdle()
         
         // Then
         viewModel.searchQuery.test {
-            assertEquals("trending", awaitItem())
+            assertEquals("", awaitItem()) // Search field is empty
         }
+
+        // Verify empty query is passed as-is (PagingSource will call trending endpoint)
+        verify(atLeast = 1) { repository.getSearchStream("") }
 
         gifsJob.cancel()
     }
@@ -105,7 +110,7 @@ class SearchViewModelTest {
     }
     
     @Test
-    fun `blank queries are filtered out`() = runTest {
+    fun `blank queries are passed as-is to repository`() = runTest {
         // Given
         every { repository.getSearchStream(any()) } returns flowOf(PagingData.from(listOf(mockGif)))
         viewModel = SearchViewModel(repository)
@@ -116,9 +121,9 @@ class SearchViewModelTest {
         viewModel.setSearchQuery("")
         advanceTimeBy(500)
         testDispatcher.scheduler.advanceUntilIdle()
-        
-        // Then - Repository should not be called with blank query
-        verify(exactly = 0) { repository.getSearchStream("") }
+
+        // Then - Repository should be called with empty string (PagingSource handles trending)
+        verify(atLeast = 1) { repository.getSearchStream("") }
 
         gifsJob.cancel()
     }

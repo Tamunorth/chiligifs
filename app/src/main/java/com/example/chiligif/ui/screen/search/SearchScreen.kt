@@ -154,7 +154,12 @@ fun SharedTransitionScope.SearchScreen(
                     } else {
                         GifGrid(
                             lazyGifItems = lazyGifItems,
-                            onGifClick = onGifClick,
+                            onGifClick = { gif ->
+                                // Cache immediately (synchronously) to prevent loader on DetailScreen
+                                viewModel.cacheGif(gif)
+                                // Then navigate
+                                onGifClick(gif.id)
+                            },
                             animatedVisibilityScope = animatedVisibilityScope
                         )
                     }

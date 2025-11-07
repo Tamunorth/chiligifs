@@ -48,7 +48,7 @@ import kotlinx.coroutines.flow.flowOf
 @Composable
 fun SharedTransitionScope.GifGrid(
     lazyGifItems: LazyPagingItems<GifDto>,
-    onGifClick: (String) -> Unit,
+    onGifClick: (GifDto) -> Unit,
     animatedVisibilityScope: AnimatedVisibilityScope
 ) {
     LazyVerticalGrid(
@@ -65,7 +65,7 @@ fun SharedTransitionScope.GifGrid(
             lazyGifItems[index]?.let { gif ->
                 GifGridItem(
                     gif = gif,
-                    onClick = { onGifClick(gif.id) },
+                    onClick = { onGifClick(gif) },
                     animatedVisibilityScope = animatedVisibilityScope
                 )
             }

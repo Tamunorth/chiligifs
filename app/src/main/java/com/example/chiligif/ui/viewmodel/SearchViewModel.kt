@@ -29,12 +29,13 @@ class SearchViewModel @Inject constructor(
     /**
      * The paginated GIF data stream.
      * This flow automatically updates when the search query changes (after debounce).
-     * Empty query shows trending GIFs.
+     * Empty query uses trending endpoint, non-empty query uses search endpoint.
      * Results are cached in the ViewModel scope to survive configuration changes.
      */
     val gifs: Flow<PagingData<GifDto>> = _searchQuery
         .debounce(500L) // Wait 500ms after the user stops typing
         .flatMapLatest { query ->
+            // Pass query as-is - PagingSource handles blank queries by calling trending endpoint
             repository.getSearchStream(query)
         }
         .cachedIn(viewModelScope) // Cache results in the ViewModel scope
@@ -45,6 +46,14 @@ class SearchViewModel @Inject constructor(
      */
     fun setSearchQuery(query: String) {
         _searchQuery.value = query
+    }
+
+    /**
+     * Caches a GIF immediately (synchronously) when user clicks it.
+     * This ensures the GIF is available in DetailScreen without API call.
+     */
+    fun cacheGif(gif: GifDto) {
+        repository.cacheGifSync(gif)
     }
 }
 
