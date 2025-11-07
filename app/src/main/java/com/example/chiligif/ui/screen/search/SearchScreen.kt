@@ -1,6 +1,7 @@
 package com.example.chiligif.ui.screen.search
 
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
@@ -8,7 +9,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -17,7 +22,11 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,6 +37,7 @@ import com.example.chiligif.ui.screen.search.components.EmptyState
 import com.example.chiligif.ui.screen.search.components.ErrorState
 import com.example.chiligif.ui.screen.search.components.GifGrid
 import com.example.chiligif.ui.screen.search.components.LoadingState
+import com.example.chiligif.ui.screen.search.components.SearchDialog
 import com.example.chiligif.ui.viewmodel.SearchViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
@@ -39,6 +49,9 @@ fun SharedTransitionScope.SearchScreen(
 ) {
     val searchQuery by viewModel.searchQuery.collectAsState()
     val lazyGifItems = viewModel.gifs.collectAsLazyPagingItems()
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    var showSearchDialog by remember { mutableStateOf(false) }
     
     Scaffold(
         topBar = {
@@ -46,8 +59,28 @@ fun SharedTransitionScope.SearchScreen(
                 title = {
                     Text(
                         text = "ChiliGIF",
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        style = if (isLandscape)
+                            MaterialTheme.typography.titleMedium
+                        else
+                            MaterialTheme.typography.titleLarge
                     )
+                },
+                actions = {
+                    if (isLandscape) {
+                        // In landscape, show search icon with border
+                        IconButton(
+                            onClick = { showSearchDialog = true },
+                            modifier = Modifier
+                                .padding(end = 8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "Search",
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        }
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -61,14 +94,16 @@ fun SharedTransitionScope.SearchScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Search TextField
-            CustomSearchBar(
-                query = searchQuery,
-                onQueryChange = { viewModel.setSearchQuery(it) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            )
+            // Search TextField - only show in portrait
+            if (!isLandscape) {
+                CustomSearchBar(
+                    query = searchQuery,
+                    onQueryChange = { viewModel.setSearchQuery(it) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                )
+            }
             
             // Handle loading and error states
             when (val state = lazyGifItems.loadState.refresh) {
@@ -95,6 +130,15 @@ fun SharedTransitionScope.SearchScreen(
                 }
             }
         }
+    }
+
+    // Search dialog for landscape mode
+    if (isLandscape && showSearchDialog) {
+        SearchDialog(
+            query = searchQuery,
+            onQueryChange = { viewModel.setSearchQuery(it) },
+            onDismiss = { showSearchDialog = false }
+        )
     }
 }
 

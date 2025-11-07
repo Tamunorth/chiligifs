@@ -42,7 +42,7 @@ class GiphyPagingSource(
                 gif.images.downsizedMedium?.url != null ||
                 gif.images.fixedWidth?.url != null ||
                 gif.images.fixedWidthSmall?.url != null
-            }
+            }.distinctBy { it.id }
             
             val nextKey = if (gifs.isEmpty()) {
                 null
