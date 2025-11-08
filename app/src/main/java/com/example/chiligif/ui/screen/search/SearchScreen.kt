@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -43,7 +44,6 @@ import com.example.chiligif.ui.screen.search.components.GifGrid
 import com.example.chiligif.ui.screen.search.components.SearchDialog
 import com.example.chiligif.ui.screen.search.components.SearchEmptyState
 import com.example.chiligif.ui.screen.search.components.SearchErrorState
-import com.example.chiligif.ui.screen.search.components.SearchLoadingState
 import com.example.chiligif.ui.viewmodel.SearchViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
@@ -61,6 +61,9 @@ fun SharedTransitionScope.SearchScreen(
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     var showSearchDialog by remember { mutableStateOf(false) }
+
+    // Track refreshing state based on load state
+    val isRefreshing = lazyGifItems.loadState.refresh is LoadState.Loading
     
     Scaffold(
         topBar = {
@@ -135,33 +138,39 @@ fun SharedTransitionScope.SearchScreen(
                         .padding(16.dp)
                 )
             }
-            
-            // Handle loading and error states
-            when (val state = lazyGifItems.loadState.refresh) {
-                is LoadState.Loading -> {
-                    SearchLoadingState()
-                }
-                is LoadState.Error -> {
-                    SearchErrorState(
-                        message = state.error.message ?: "An error occurred",
-                        onRetry = { lazyGifItems.retry() }
-                    )
-                }
-                else -> {
-                    // Show the grid
-                    if (lazyGifItems.itemCount == 0) {
-                        SearchEmptyState()
-                    } else {
-                        GifGrid(
-                            lazyGifItems = lazyGifItems,
-                            onGifClick = { gif ->
-                                // Cache immediately (synchronously) to prevent loader on DetailScreen
-                                viewModel.cacheGif(gif)
-                                // Then navigate
-                                onGifClick(gif.id)
-                            },
-                            animatedVisibilityScope = animatedVisibilityScope
+
+            // Wrap content in PullToRefreshBox to handle swipe-to-refresh
+            PullToRefreshBox(
+                isRefreshing = isRefreshing,
+                onRefresh = { lazyGifItems.refresh() },
+                modifier = Modifier.fillMaxSize()
+            ) {
+                // Handle loading and error states
+                when (val state = lazyGifItems.loadState.refresh) {
+
+                    is LoadState.Error -> {
+                        SearchErrorState(
+                            message = state.error.message ?: "An error occurred",
+                            onRetry = { lazyGifItems.retry() }
                         )
+                    }
+
+                    else -> {
+                        // Show the grid
+                        if (lazyGifItems.itemCount == 0) {
+                            SearchEmptyState()
+                        } else {
+                            GifGrid(
+                                lazyGifItems = lazyGifItems,
+                                onGifClick = { gif ->
+                                    // Cache immediately (synchronously) to prevent loader on DetailScreen
+                                    viewModel.cacheGif(gif)
+                                    // Then navigate
+                                    onGifClick(gif.id)
+                                },
+                                animatedVisibilityScope = animatedVisibilityScope
+                            )
+                        }
                     }
                 }
             }
